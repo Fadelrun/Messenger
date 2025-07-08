@@ -3,15 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="/styles.css">
     <title>Messenger</title>
 </head>
 <body>
+  <div id="userInfo">
+    <span id="usernameDisplay"></span>
+    <button id="logoutBtn">Выйти</button>
+  </div>
+    <div id="chatListContainer">
+      <h3>Ваши чаты</h3>
+        <form id="newChatForm">
+            <input type="text" id="newChatUser" placeholder="Имя пользователя" />
+            <button>Начать чат</button>
+        </form>
+      <ul id="chatList"></ul>
+    </div>
+  
     <ul id="messages"></ul>
+  
     <form id="form" action="">
         <input id="input" autocomplete="off" placeholder="Введите сообщение..."/>
         <button>Отправить</button>
     </form>
+  
     <script src="/socket.io/socket.io.js"></script>
     <script src="client.js"></script>   
 </body>

@@ -3,7 +3,9 @@ const mongoose = require('mongoose');
 const path = require('path');
 const http = require('http');
 const cookieSession = require('cookie-session');
+const authMiddleware = require('./middleware/authMiddleware');
 const authRoutes = require('./routes/auth.js');
+const chatRoutes = require('./routes/chatRoutes');
 const { Server } = require('socket.io');
 const { User, Message } = require('./models/models');
 
@@ -72,23 +74,30 @@ io.on('connection', (socket) => {
   const userId = socket.request.session.userId;
   console.log(`Пользователь подключен: ${userId}`);
 
-  // Загрузка истории сообщений
-  loadChatHistory(socket);
+  socket.on('join chat', (chatId) => {
+    socket.join(chatId);
+    console.log(`Пользователь ${userId} присоединился к чату ${chatId}`);
 
-  // Обработка сообщений
+    
+    loadChatHistoryForChat(socket, chatId);
+  });
+
+
   socket.on('chat message', async (msg) => {
     try {
-      if (!msg.message || typeof msg.message !== 'string') {
+      const { chatId, message } = msg;
+      if (!chatId || !message || typeof message !== 'string') {
         return socket.emit('chat error', 'Неверный формат сообщения');
       }
-
+  
       const newMessage = await Message.create({
         userId,
         username: socket.request.session.username,
-        message: msg.message.trim()
+        message: message.trim(),
+        chatId 
       });
-
-      io.emit('chat message', formatMessage(newMessage));
+  
+      io.to(chatId).emit('chat message', formatMessage(newMessage));
     } catch (err) {
       console.error('Ошибка сохранения:', err);
       socket.emit('chat error', 'Ошибка сервера');
@@ -100,31 +109,32 @@ io.on('connection', (socket) => {
   });
 });
 
-async function loadChatHistory(socket) {
+async function loadChatHistoryForChat(socket, chatId) {
   try {
-    const messages = await Message.find()
+    const messages = await Message.find({ chatId })
       .sort({ timestamp: 1 })
       .limit(100)
       .lean();
-    
+
     socket.emit('chat history', messages.map(formatMessage));
   } catch (err) {
     console.error('Ошибка загрузки истории:', err);
-    socket.emit('chat error', 'Не удалось загрузить историю');
   }
 }
 
+
 function formatMessage(msg) {
   return {
-    id: msg._id,
-    user: msg.username,
-    text: msg.message,
-    date: msg.timestamp
+    _id: msg._id,
+    username: msg.username,
+    message: msg.message,
+    timestamp: msg.timestamp
   };
 }
 
 // Маршруты
 app.use('/auth', authRoutes);
+app.use('/chats', authMiddleware, chatRoutes);
 
 app.get('/', (req, res) => {
     if (!req.session.userId) {

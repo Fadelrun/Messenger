@@ -1,0 +1,546 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  grid-template-rows: auto 1fr auto;
+  grid-template-areas:
+    "sidebar header"
+    "sidebar messages"
+    "sidebar form";
+  overflow: hidden;
+}
+
+#userInfo {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 12px 20px;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+#usernameDisplay {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 16px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  border-radius: 25px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.35);
+  user-select: none;
+  max-width: 220px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: background 0.3s ease;
+}
+
+/* Кнопка выхода */
+#logoutBtn {
+  grid-area: header;
+  justify-self: end;
+  margin: 1rem;
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 25px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+#logoutBtn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+#chatListContainer {
+  grid-area: sidebar;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 0 20px 20px 0;
+  padding: 1.5rem;
+  box-shadow: 5px 0 25px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+#chatListContainer h3 {
+  color: #2c3e50;
+  margin-bottom: 1.5rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  text-align: center;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #ecf0f1;
+}
+#newChatForm {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+#newChatUser {
+  flex: 1;
+  padding: 0.3rem 0.5rem;
+  border: 2px solid rgba(102, 126, 234, 0.5);
+  border-radius: 25px;
+  font-size: 0.7rem;
+  outline: none;
+  transition: border-color 0.3s ease;
+  background: rgba(255, 255, 255, 0.9);
+  color: #2c3e50;
+  backdrop-filter: blur(10px);
+}
+
+#newChatUser::placeholder {
+  color: #7f8c8d;
+}
+
+#newChatUser:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
+  background: rgba(255, 255, 255, 1);
+}
+
+#newChatForm button {
+  padding: 0 0.5rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 25px;
+  font-weight: 600;
+  font-size: 0.6rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+  position: relative;
+  overflow: hidden;
+}
+
+#newChatForm button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+#newChatForm button:hover::before {
+  left: 100%;
+}
+
+#newChatForm button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+}
+
+#newChatForm button:active {
+  transform: translateY(0);
+}
+
+/* Список чатов */
+#chatList {
+  list-style: none;
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+#chatList::-webkit-scrollbar {
+  width: 6px;
+}
+
+#chatList::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#chatList::-webkit-scrollbar-thumb {
+  background: #bdc3c7;
+  border-radius: 3px;
+}
+
+#chatList::-webkit-scrollbar-thumb:hover {
+  background: #95a5a6;
+}
+
+#chatList li {
+  padding: 1rem;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+  position: relative;
+  overflow: hidden;
+}
+
+#chatList li::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  transition: left 0.5s;
+}
+
+#chatList li:hover::before {
+  left: 100%;
+}
+
+#chatList li:hover {
+  transform: translateX(5px);
+  border-color: #667eea;
+  box-shadow: 0 5px 20px rgba(102, 126, 234, 0.3);
+}
+
+#chatList li.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  transform: translateX(5px);
+  box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+}
+
+/* Область сообщений */
+#messages {
+  grid-area: messages;
+  list-style: none;
+  padding: 2rem;
+  overflow-y: auto;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  margin: 1rem 1rem 0 0;
+  border-radius: 20px 20px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+#messages::-webkit-scrollbar {
+  width: 8px;
+}
+
+#messages::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+#messages::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+}
+
+#messages::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+#messages li {
+  max-width: 70%;
+  padding: 1rem 1.5rem;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.9);
+  color: #2c3e50;
+  box-shadow: 0 3px 15px rgba(0, 0, 0, 0.1);
+  position: relative;
+  animation: messageSlide 0.3s ease-out;
+  backdrop-filter: blur(10px);
+}
+
+@keyframes messageSlide {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+#messages li.own-message {
+  align-self: flex-end;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+#messages li::before {
+  content: "";
+  position: absolute;
+  bottom: -5px;
+  left: 20px;
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 10px solid rgba(255, 255, 255, 0.9);
+}
+
+#messages li.own-message::before {
+  left: auto;
+  right: 20px;
+  border-top-color: #764ba2;
+}
+
+/* Форма отправки сообщений */
+#form {
+  grid-area: form;
+  display: flex;
+  padding: 1.5rem;
+  gap: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  margin: 0 1rem 1rem 0;
+  border-radius: 0 0 20px 20px;
+}
+
+#input {
+  flex: 1;
+  padding: 1rem 1.5rem;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 25px;
+  background: rgba(255, 255, 255, 0.9);
+  color: #2c3e50;
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+#input:focus {
+  border-color: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+}
+
+#input::placeholder {
+  color: #7f8c8d;
+}
+
+#form button {
+  padding: 1rem 2rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+  position: relative;
+  overflow: hidden;
+}
+
+#form button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+#form button:hover::before {
+  left: 100%;
+}
+
+#form button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+}
+
+#form button:active {
+  transform: translateY(0);
+}
+
+/* Адаптивность для планшетов */
+@media (max-width: 1024px) {
+  body {
+    grid-template-columns: 280px 1fr;
+  }
+
+  #chatListContainer {
+    padding: 1rem;
+  }
+}
+
+/* Адаптивность для мобильных устройств */
+@media (max-width: 768px) {
+  body {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto 1fr auto;
+    grid-template-areas:
+      "header"
+      "sidebar"
+      "messages"
+      "form";
+  }
+
+  #logoutBtn {
+    justify-self: center;
+    margin: 0.5rem;
+  }
+
+  #chatListContainer {
+    border-radius: 0;
+    padding: 1rem;
+    max-height: 150px;
+    overflow-y: auto;
+  }
+
+  #chatListContainer h3 {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  #chatList {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: 0.5rem;
+  }
+
+  #chatList li {
+    min-width: 120px;
+    white-space: nowrap;
+    text-align: center;
+    padding: 0.75rem;
+  }
+
+  #messages {
+    margin: 0;
+    border-radius: 0;
+    padding: 1rem;
+  }
+
+  #messages li {
+    max-width: 85%;
+  }
+
+  #form {
+    margin: 0;
+    border-radius: 0;
+    padding: 1rem;
+  }
+
+  #input {
+    font-size: 16px; /* Предотвращает зум на iOS */
+  }
+}
+
+/* Анимации загрузки */
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.loading {
+  animation: pulse 1.5s infinite;
+}
+
+/* Стили для пустого состояния */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center;
+  padding: 2rem;
+}
+
+.empty-state h3 {
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+
+.empty-state p {
+  font-size: 1rem;
+  opacity: 0.8;
+}
+
+/* Дополнительные эффекты */
+.message-time {
+  font-size: 0.75rem;
+  opacity: 0.7;
+  margin-top: 0.5rem;
+  text-align: right;
+}
+
+.message-author {
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  font-size: 0.875rem;
+}
+
+/* Эффект печатания */
+.typing-indicator {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-style: italic;
+}
+
+.typing-dots {
+  display: inline-flex;
+  margin-left: 0.5rem;
+}
+
+.typing-dots span {
+  width: 4px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 50%;
+  margin: 0 1px;
+  animation: typing 1.4s infinite;
+}
+
+.typing-dots span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing-dots span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes typing {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+  }
+  30% {
+    transform: translateY(-10px);
+  }
+}

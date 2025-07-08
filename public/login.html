@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/login.css">
     <title>Вход в чат</title>
 </head>
 <body>
@@ -11,12 +12,12 @@
 <form id="loginForm">
     <div>
         <label for="username">Имя пользователя:</label>
-        <input type="text" id="username" name="username" required>
+        <input type="text" id="username" name="username" minlength="3" maxlength="20" pattern="[a-zA-Z0-9]+" title="Имя пользователя должно содержать от 3 до 20 латинских букв или цифр" required>
     </div>
     
     <div>
         <label for="password">Пароль:</label>
-        <input type="password" id="password" name="password" required>
+        <input type="password" id="password" minlength="6" maxlength="25" name="password" required >
     </div>
     
     <button type="submit">Войти</button>

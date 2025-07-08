@@ -10,6 +10,7 @@ const userSchema = new mongoose.Schema({
 const messageSchema = new mongoose.Schema({
     username: { type: String, required: true }, 
     message: { type: String, required: true },
+    chatId: { type: String, required: true },
     timestamp: { type: Date, default: Date.now }
 });
 
